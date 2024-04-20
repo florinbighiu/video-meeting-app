@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -39,14 +38,20 @@ public class MeetingServiceImpl implements MeetingService {
 
     @Override
     public void addUserToMeeting(Long meetingId, Long userId) {
+        Meeting meeting = getMeetingById(meetingId);
+        User user = userService.getUserById(userId);
 
+        if (meeting != null && user != null) {
+            meeting.getParticipants().add(user);
+            meetingRepository.save(meeting);
+   }
     }
 
 
     @Override
     public void removeUserFromMeeting(Long meetingId, Long userId) {
         Meeting meeting = getMeetingById(meetingId);
-        Optional<User> user = userService.getUserById(userId);
+        User user = userService.getUserById(userId);
         if (meeting != null && user != null) {
             meeting.getParticipants().remove(user);
             meetingRepository.save(meeting);
